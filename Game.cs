@@ -36,12 +36,13 @@
  *   - It should be noticed that this programs development was influenced by stackoverflow.
  */
 
+// Make on Exception that checks input for validness
+
 using System;
 using System.Collections.Generic;
 using System.Linq; // Enumerable method
 
 namespace YahtzyNEW {
-
     public class Game {
         // Set the stage with players, where each individual player has a scoreboard and a list of dies wich contains the individual dies.
         public List<Player> players = new List<Player>();
@@ -57,7 +58,6 @@ namespace YahtzyNEW {
             {
                 Console.WriteLine("\nWhat is Player " + (i + 1) + "'s name?"); // Remove i+1 perhaps and start i from 1 in iteration
                 players.Add(new Player(Console.ReadLine()));
-     
             }
             StartGame();
         }
@@ -65,7 +65,6 @@ namespace YahtzyNEW {
         // Runs game rounds until conditions of finnished game is fulfilled
         public void StartGame()
         {
-           
             while (!GameEnd())
             {
                 NewRound();
@@ -112,7 +111,7 @@ namespace YahtzyNEW {
                     Exit();
                     break;
                 case ("save"):
-                    ScorePossibilities(player);
+                    ScorePossibilities(player); //Should theese classes be in player?
                     break;
                 case ("release"):
                     Release(player);
@@ -131,8 +130,6 @@ namespace YahtzyNEW {
                     break;
             }
         }
-
-
 
         // Pick dies to hold
         public void Hold(Player player)
@@ -175,7 +172,6 @@ namespace YahtzyNEW {
             this.AmountOfRolls = Convert.ToInt32(Console.ReadLine());
             player.PlayerRolls = AmountOfRolls; // also add rolls for current round
             Console.WriteLine("Players now have " + AmountOfRolls + " Rolls pr. turn" );
-
         }
 
         // Display scoreboard (text box)
@@ -192,8 +188,6 @@ namespace YahtzyNEW {
             Console.WriteLine("---------------------------");
         }
 
-
-
         // Display command options
         public void Help()
         {
@@ -201,10 +195,10 @@ namespace YahtzyNEW {
         }
 
         // Checks if no previos score exist, and if the dicehand fulfills criteria for score possibility
-
-
         public void ScorePossibilities(Player player)
         {
+            // would be cool if this was integrated in print
+            // print play.scoreboard["aces"] == null && player.Aces >=! print green)
             Console.Write("Theese Are the dies you can save to, write the number of where you want to save your points eg. '1'\n");
             if (player.scoreboard["Aces"] == null && player.Aces() >= 1)
             {
@@ -234,38 +228,35 @@ namespace YahtzyNEW {
             {
                 Console.WriteLine("7. Chance");
             }
-            if (player.scoreboard["Yahtzee"] == null && player.dieList.Distinct().Count() == 1)
+            if (player.scoreboard["Yahtzee"] == null && player.Yahtzy() >= 1) 
             {
                 Console.WriteLine("8. Yahtzy");
             }
-            if (player.scoreboard["One Pair"] == null && (player.OccurenceOfEachDice.ContainsValue(2) ||
-                player.OccurenceOfEachDice.ContainsValue(3) ||
-                player.OccurenceOfEachDice.ContainsValue(4) ||
-                player.OccurenceOfEachDice.ContainsValue(5)))
+            if (player.scoreboard["One Pair"] == null && player.OnePair() >= 1)
             {
                 Console.WriteLine("9. One pair");
             }
-            if (player.scoreboard["Two Pairs"] == null)
+            if (player.scoreboard["Two Pairs"] == null  && player.TwoPairs() >= 1) 
             {
                 Console.WriteLine("10. Two Pairs");
             }
-            if (player.scoreboard["Three Of A Kind"] == null)
+            if (player.scoreboard["Three Of A Kind"] == null && player.ThreeOfAKind() >= 1) 
             {
                 Console.WriteLine("11. Three Of A Kind");
             }
-            if (player.scoreboard["Four Of A Kind"] == null)
+            if (player.scoreboard["Four Of A Kind"] == null && player.FourOfAKind() >= 1)
             {
                 Console.WriteLine("12. Four Of A Kind");
             }
-            if (player.scoreboard["Full House"] == null)
+            if (player.scoreboard["Full House"] == null && player.FullHouse() >= 1) 
             {
                 Console.WriteLine("13. Full House");
             }
-            if (player.scoreboard["Small Straight"] == null)
+            if (player.scoreboard["Small Straight"] == null && player.SmallStraight() >= 1) 
             {
                 Console.WriteLine("14. Small Straight");
             }
-            if (player.scoreboard["Large Straight"] == null)
+            if (player.scoreboard["Large Straight"] == null && player.LargeStraight() >= 1) 
             {
                 Console.WriteLine("15. Large Straight");
             }
@@ -277,6 +268,8 @@ namespace YahtzyNEW {
         {
             switch (Console.ReadLine())
             {
+                // Would be awesome if we could make this a loop, tuple dict? 1 = index, aces == key aces in method could be key aswell?
+                // Or put together with above if-statements
                 case ("1"):
                     player.scoreboard["Aces"] = player.Aces();
                     player.PlayerTurn = false;
@@ -343,7 +336,7 @@ namespace YahtzyNEW {
             }
         }
 
-        // Drop score-option, if no correct dies are avaliable
+        // Show scores that the player can drop, after entering "drop"
         public void Drop(Player player)
         {
             Console.WriteLine("What Column do you want to drop?");
@@ -411,6 +404,7 @@ namespace YahtzyNEW {
             DropScore(player);
         }
 
+        // Drop score based by player input
         public void DropScore(Player player)
         {
             string Input = Console.ReadLine();
@@ -482,8 +476,7 @@ namespace YahtzyNEW {
             }
         }
 
-
-        // End game after 13 rounds
+        // Ends game after 13 rounds
         public bool GameEnd()
         {
             if (roundNumber == 13) {

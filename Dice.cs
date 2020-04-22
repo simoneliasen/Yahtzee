@@ -4,14 +4,12 @@ using System.Text;
 
 namespace YahtzyNEW {
     public class Dice {
-
     public Random rand = new Random();    
     public int DiceValue { get; set; }
     public bool HoldState { get; set; }
     public int Bias = 0;
-
     // bias variable and one roll method perhaps?
-    public int Roll() // maybe roll methods could be one method, if simple enough (set default input at 50 (neutral dice) and make user change)
+    public int Roll() // Make distribution method (current is weak)
     {
         if (this.HoldState == false)
         {
@@ -37,7 +35,7 @@ namespace YahtzyNEW {
         }
         }
    }
-
+    /*
     public class BiasedDice : Dice {
         public int NegativeBiasRoll() 
         {
@@ -66,5 +64,6 @@ namespace YahtzyNEW {
                 return this.DiceValue;
             }
         }
-    }
+        
+    }*/
 }

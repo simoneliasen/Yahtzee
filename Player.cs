@@ -184,66 +184,85 @@ namespace YahtzyNEW {
                     points += i * 2;
                 }
             }
-            // Is possible?
-            // assign
             Console.WriteLine("You have a pair");
-
-            // If 2 or more is in list of occurences, display as option
-            // if more one pair occur, give option to select what pair to use
             return 1;
+            /*
+            player.OccurenceOfEachDice.ContainsValue(2) || // player.OnePair() >= 1
+                player.OccurenceOfEachDice.ContainsValue(3) ||
+                player.OccurenceOfEachDice.ContainsValue(4) ||
+                player.OccurenceOfEachDice.ContainsValue(5)))
+
+             If 2 or more is in list of occurences, display as option
+             if more one pair occur, give option to select what pair to use  */
         }
+
         public int TwoPairs()
         {
             // If Onepair * 2
             return 1;
         }
+
         public int ThreeOfAKind()
         {
             // If three or more exist in array (steal from one pair)
             return 1;
         }
+
         public int FourOfAKind()
         {
             // If four or more of a kind exist
             return 1;
         }
+
         public int SmallStraight()
         {
             // Sorted array method? -1 start and -1 end check if they are one larger than eachother?
            
             return 1;
         }
+
         public int LargeStraight()
         {
             // sorted array if it's equal to 1,2,3,4,5
             // if dielist == 1,2,3,4,5
             return 1;
         }
+
         public int FullHouse()
         {
             //bool ThreeOfAKind = false;// add methods in future
             //bool OnePair = false; // add methods in future
             int points = 0;
+            bool ThreeOfAKind = false;
+            bool OnePair = false;
             for (int i = 0; i < OccurenceOfEachDice.Values.Count(); i++)
             {
                 if (OccurenceOfEachDice[i] == 3)
                 {
                     points += i * 3;
-                    //ThreeOfAKind = true;
+                    ThreeOfAKind = true;
                 }
                 if (OccurenceOfEachDice[i] == 2)
                 {
                     points += i * 2;
-                    //OnePair = true;
+                    OnePair = true;
 
                 }
             }
-            return points;
+            if (ThreeOfAKind && OnePair)
+            {
+                return points;
+            }
+            else
+            {
+                points = 0;
+                return points;
+            }
+            // Can be used as score and boolean
+            // 0 == false
+            // points+1 = true 
+            // points
 
-            //if (ThreeOfAKind && OnePair)
-            //{
-            //    return points;
-            //}
         }
 
         // Get Total sum of player
