@@ -27,6 +27,7 @@ namespace YahtzyNEW {
                 ["Fours"] = null,
                 ["Fives"] = null,
                 ["Sixes"] = null,
+
                 ["One Pair"] = 0,
                 ["Two Pairs"] = 0,
                 ["Three Of A Kind"] = 0,
@@ -34,6 +35,7 @@ namespace YahtzyNEW {
                 ["Full House"] = 0,
                 ["Small Straight"] = 0,
                 ["Large Straight"] = 0,
+
                 ["Yahtzee"] = null,
                 ["Chance"] = null
             };
@@ -153,116 +155,126 @@ namespace YahtzyNEW {
         // Checks occurences of each dice
         public Dictionary<int, int> OccurencesOfDice()
         {
-            List<int> diceroll = dieList.Select(x => x.DiceValue).ToList();
+            List<int> diceroll = dieList.Select(dice => dice.DiceValue).ToList();
 
             for (int i = 1; i < 7; i++) // For each dice 0-5
             {
-                int count = 0;
-                foreach (int y in diceroll.FindAll(x => x == i))
+                int occurence = 0;
+                foreach (int y in diceroll.FindAll(dice => dice == i))
                 {
-                    count++;
+                    occurence++;
                 }
-                this.OccurenceOfEachDice[i] = count;
+                this.OccurenceOfEachDice[i] = occurence;
             }
+            
             this.OccurenceOfEachDice.Select(o => $"{o.Key}: {o.Value}").ToList().ForEach(Console.WriteLine);
-            if (OccurenceOfEachDice.ContainsValue(2))
-            {
-                Console.WriteLine("Contains a pair");
-            }
+
             return this.OccurenceOfEachDice;
         }
 
+        // Not a part of yahtzy apparently, remove
         public int OnePair()
         {
             int points = 0;
-            int pairs = 0;
-            for (int i = 0; i < OccurenceOfEachDice.Values.Count(); i++)
+            foreach (var item in OccurenceOfEachDice)
             {
-                if (OccurenceOfEachDice[i] <= 2) // If equals two or larger (3 is still a pair)
+                if (item.Value >= 2)
                 {
-                    pairs++;
-                    points += i * 2;
+                    points = 2 * item.Key;
+                    Console.WriteLine("There's a pair");
                 }
             }
-            Console.WriteLine("You have a pair");
-            return 1;
-            /*
-            player.OccurenceOfEachDice.ContainsValue(2) || // player.OnePair() >= 1
-                player.OccurenceOfEachDice.ContainsValue(3) ||
-                player.OccurenceOfEachDice.ContainsValue(4) ||
-                player.OccurenceOfEachDice.ContainsValue(5)))
-
-             If 2 or more is in list of occurences, display as option
-             if more one pair occur, give option to select what pair to use  */
+                return points;
         }
 
+        // Not a part of yahtzy apparently, remove
         public int TwoPairs()
         {
-            // If Onepair * 2
+            int amountofpairs = 0;
+            foreach (var item in OccurenceOfEachDice.Values)
+            {
+                if (item >= 2)
+                {
+                    amountofpairs++;
+                }
+            }
+            if (amountofpairs >= 2)
+            {
+                Console.WriteLine("There is two pairs");
+
+            }
+            // Return == item's key * items value for both pairs
+
             return 1;
         }
 
         public int ThreeOfAKind()
         {
-            // If three or more exist in array (steal from one pair)
-            return 1;
+            int points = 0;
+            foreach (var item in OccurenceOfEachDice)
+            {
+                if (item.Value >= 3)
+                {
+                    points = 3 * item.Key;
+                    Console.WriteLine("There's Three of a kind");
+                }
+            }
+            return points;
         }
 
         public int FourOfAKind()
         {
-            // If four or more of a kind exist
-            return 1;
+            int points = 0;
+            foreach (var item in OccurenceOfEachDice)
+            {
+                if (item.Value >= 4)
+                {
+                    points = 4 * item.Key;
+                    Console.WriteLine("There's Four of a kind");
+                }
+            }
+            return points;
         }
 
         public int SmallStraight()
         {
-            // Sorted array method? -1 start and -1 end check if they are one larger than eachother?
-           
+            // Dummy code, = if:  1,2,3,4      2,3,4,5      3,4,5,6 //  from sorted array
+
             return 1;
         }
 
         public int LargeStraight()
         {
-            // sorted array if it's equal to 1,2,3,4,5
-            // if dielist == 1,2,3,4,5
+            // dummy code = if: 1,2,3,4,5        2,3,4,5,6     // from sorted array
+          
             return 1;
         }
 
         public int FullHouse()
         {
-            //bool ThreeOfAKind = false;// add methods in future
-            //bool OnePair = false; // add methods in future
             int points = 0;
-            bool ThreeOfAKind = false;
-            bool OnePair = false;
-            for (int i = 0; i < OccurenceOfEachDice.Values.Count(); i++)
-            {
-                if (OccurenceOfEachDice[i] == 3)
-                {
-                    points += i * 3;
-                    ThreeOfAKind = true;
-                }
-                if (OccurenceOfEachDice[i] == 2)
-                {
-                    points += i * 2;
-                    OnePair = true;
 
+            bool pair = false;
+            bool threeofakind = false;
+ 
+            foreach (var item in OccurenceOfEachDice)
+            {
+                if (item.Value == 2)
+                {
+                    pair = true;
+                }
+                if (item.Value == 3)
+                {
+                    threeofakind = true;
                 }
             }
-            if (ThreeOfAKind && OnePair)
-            {
-                return points;
-            }
-            else
-            {
-                points = 0;
-                return points;
-            }
-            // Can be used as score and boolean
-            // 0 == false
-            // points+1 = true 
-            // points
 
+            if (pair && threeofakind)
+            {
+                points = 25;
+            }
+
+            return points;
         }
 
         // Get Total sum of player

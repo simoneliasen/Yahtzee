@@ -84,6 +84,7 @@ namespace YahtzyNEW {
                 {
                     ReadLine(player);
                     Console.WriteLine("\n\n\n");
+                    
                 }
                 player.PlayerTurn = true;
             }
@@ -97,6 +98,8 @@ namespace YahtzyNEW {
                 case ("roll"):
                     Score(player);
                     player.Roll();
+                    player.OccurencesOfDice();
+                    player.OnePair();
                     break;
                 case ("help"):
                     Help();
@@ -232,7 +235,7 @@ namespace YahtzyNEW {
             {
                 Console.WriteLine("8. Yahtzy");
             }
-            if (player.scoreboard["One Pair"] == null && player.OnePair() >= 1)
+            if (player.scoreboard["One Pair"] == null&& player.OnePair() >= 1)
             {
                 Console.WriteLine("9. One pair");
             }
@@ -302,6 +305,8 @@ namespace YahtzyNEW {
                     player.scoreboard["Yahtzee"] = player.Yahtzy();
                     player.PlayerTurn = false;
                     break;
+
+
                 case ("9"):
                     player.scoreboard["One Pair"] = player.OnePair();
                     player.PlayerTurn = false;
@@ -330,6 +335,12 @@ namespace YahtzyNEW {
                     player.scoreboard["Large Straight"] = player.LargeStraight();
                     player.PlayerTurn = false;
                     break;
+
+
+
+
+
+
                 default:
                     Console.WriteLine("Doesn't look like you have the right dies, either 'release' 'roll' or 'drop' to select a score to skip"); // redirect user so he can either release or cancel die (se it to 0)
                     break;
