@@ -13,6 +13,7 @@ namespace YahtzyNEW {
         public Dictionary<int, int> OccurenceOfEachDice;
         public Dictionary<string, int?> scoreboard;
         // public Dictionary<Tuple<int, bool>, string> updatedscoreboard; // int = index, bool = possible, string = Name
+        // Sorted dictionary also idea, or using enums
 
         // Player Constructors
         public Player(string name)
@@ -179,7 +180,7 @@ namespace YahtzyNEW {
             return this.OccurenceOfEachDice;
         }
 
-        // Make one pair avaliable even if there's three of a kind, four of a kind, two pairs, make the player able to choose between them (readline)
+        // works (could possible add possibility of choosing which pair if more than one exsist)
         public int OnePair()
         {
             int points = 0;
@@ -188,30 +189,32 @@ namespace YahtzyNEW {
                 if (item.Value >= 2)
                 {
                     points = 2 * item.Key;
-                    Console.WriteLine("There's a pair");
                 }
             }
                 return points;
         }
 
-        // What if there's three pairs?? (readline?)
-        public int TwoPairs()
+        // works
+        public int TwoPairs() 
         {
+            int points = 0;
+            int temppoints = 0;
             int amountofpairs = 0;
-            foreach (var item in OccurenceOfEachDice.Values)
+
+            foreach (var item in OccurenceOfEachDice)
             {
-                if (item >= 2)
+                if (item.Value >= 2)
                 {
                     amountofpairs++;
+                    temppoints += 2 * item.Key;
                 }
             }
             if (amountofpairs >= 2)
             {
-                Console.WriteLine("There are two pairs");
+                points = temppoints;
 
             }
-            // Return == item's key * items value for both pairs 
-            return 1; // Calculate correct return
+            return points; 
         }
 
         // works
@@ -223,7 +226,6 @@ namespace YahtzyNEW {
                 if (item.Value >= 3)
                 {
                     points = 3 * item.Key;
-                    Console.WriteLine("There's Three of a kind");
                 }
             }
             return points;
@@ -237,30 +239,66 @@ namespace YahtzyNEW {
             {
                 if (item.Value >= 4)
                 {
-                    points = 4 * item.Key;
-                    Console.WriteLine("There's Four of a kind");
+                    points = 4 * item.Key; 
                 }
             }
             return points;
         }
 
-        public int SmallStraight()
+        // fucky. perhaps sorted array is easier?
+        public int SmallStraight() 
         {
-            // Dummy code, if OccurenceOfEachDice.value 1,1,1,1,0,0 // 0,1,1,1,1,0 // 0,0,1,1,1,1 ==  1,2,3,4  //  2,3,4,5 //  3,4,5,6 //
-            return 1;
+            int points = 0;
+            int[] scoreboardvaluelist = OccurenceOfEachDice.Values.ToArray();
+
+            int[] firstscenario = { 1, 1, 1, 1, 0, 0 };
+            int[] secondscenario = { 0, 1, 1, 1, 1, 0 };
+            int[] thirdscenario = { 0, 0, 1, 1, 1, 1 };
+
+            if (scoreboardvaluelist.Equals(firstscenario) || scoreboardvaluelist.Equals(secondscenario) || scoreboardvaluelist.Equals(thirdscenario))
+            {
+                points = 30;
+            }
+            return points;
         }
 
-        public int LargeStraight()
+        // fucky, much easier with sorted array
+        public int LargeStraight() 
         {
-            // Dummy code, if OccurenceOfEachDice.value 1,1,1,1,1,0 // 0,1,1,1,1,1 //  ==  1,2,3,4,5  //  2,3,4,5,6
-            return 1;
+/*
+            Array.Sort(i);
+
+            if (((i[0] == 1) &&
+                 (i[1] == 2) &&
+                 (i[2] == 3) &&
+                 (i[3] == 4) &&
+                 (i[4] == 5)) ||
+                ((i[0] == 2) &&
+                 (i[1] == 3) &&
+                 (i[2] == 4) &&
+                 (i[3] == 5) &&
+                 (i[4] == 6)))
+            {
+                Sum = 40;
+            }
+            */
+            int points = 0;
+            int[] scoreboardvaluelist = OccurenceOfEachDice.Values.ToArray();
+
+            int[] firstscenario = { 1, 1, 1, 1, 1, 0 };
+            int[] secondscenario = { 0, 1, 1, 1, 1, 1 };
+
+            if (scoreboardvaluelist.Equals(firstscenario) || scoreboardvaluelist.Equals(secondscenario))
+            {
+                points = 40;
+            }
+            return points;
         }
 
         // works
         public int FullHouse()
         {
             int points = 0;
-
             bool pair = false;
             bool threeofakind = false;
  
@@ -269,8 +307,9 @@ namespace YahtzyNEW {
                 if (item.Value == 2)
                 {
                     pair = true;
+                    break;
                 }
-                if (item.Value == 3)
+                if (item.Value == 3) 
                 {
                     threeofakind = true;
                 }
@@ -279,7 +318,6 @@ namespace YahtzyNEW {
             {
                 points = 25;
             }
-
             return points;
         }
 

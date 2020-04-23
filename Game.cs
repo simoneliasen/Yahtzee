@@ -56,7 +56,7 @@ namespace YahtzyNEW {
             int AmountOfPlayers = Convert.ToInt32(Console.ReadLine());
             for (int i = 0; i < AmountOfPlayers; i++)
             {
-                Console.WriteLine("\nWhat is Player " + (i + 1) + "'s name?"); // Remove i+1 perhaps and start i from 1 in iteration
+                Console.WriteLine("\nWhat is Player " + (i + 1) + "'s name?");
                 players.Add(new Player(Console.ReadLine()));
             }
             StartGame();
@@ -84,7 +84,6 @@ namespace YahtzyNEW {
                 {
                     ReadLine(player);
                     Console.WriteLine("\n\n\n");
-                    
                 }
                 player.PlayerTurn = true;
             }
@@ -161,6 +160,7 @@ namespace YahtzyNEW {
             Console.WriteLine("1: Lucky dice.");
             Console.WriteLine("0: Fair dice.");
             Console.WriteLine("-1: Unfair dice.");
+
             int newbias = Convert.ToInt32(Console.ReadLine());
             foreach (Dice dice in player.dieList)
                 {
@@ -235,11 +235,11 @@ namespace YahtzyNEW {
             {
                 Console.WriteLine("8. Yahtzy");
             }
-            if (player.scoreboard["One Pair"] == null&& player.OnePair() >= 1)
+            if (player.scoreboard["One Pair"] == null && player.OnePair() >= 1)
             {
                 Console.WriteLine("9. One pair");
             }
-            if (player.scoreboard["Two Pairs"] == null  && player.TwoPairs() >= 1) 
+            if (player.scoreboard["Two Pairs"] == null && player.TwoPairs() >= 1)  // Always shown displays 1
             {
                 Console.WriteLine("10. Two Pairs");
             }
@@ -255,11 +255,11 @@ namespace YahtzyNEW {
             {
                 Console.WriteLine("13. Full House");
             }
-            if (player.scoreboard["Small Straight"] == null && player.SmallStraight() >= 1) 
+            if (player.scoreboard["Small Straight"] == null && player.SmallStraight() >= 1) // Always shown displays 1
             {
                 Console.WriteLine("14. Small Straight");
             }
-            if (player.scoreboard["Large Straight"] == null && player.LargeStraight() >= 1) 
+            if (player.scoreboard["Large Straight"] == null && player.LargeStraight() >= 1)  // Always shown displays 1
             {
                 Console.WriteLine("15. Large Straight");
             }
@@ -305,8 +305,6 @@ namespace YahtzyNEW {
                     player.scoreboard["Yahtzee"] = player.Yahtzy();
                     player.PlayerTurn = false;
                     break;
-
-
                 case ("9"):
                     player.scoreboard["One Pair"] = player.OnePair();
                     player.PlayerTurn = false;
@@ -335,12 +333,6 @@ namespace YahtzyNEW {
                     player.scoreboard["Large Straight"] = player.LargeStraight();
                     player.PlayerTurn = false;
                     break;
-
-
-
-
-
-
                 default:
                     Console.WriteLine("Doesn't look like you have the right dies, either 'release' 'roll' or 'drop' to select a score to skip"); // redirect user so he can either release or cancel die (se it to 0)
                     break;
@@ -352,6 +344,13 @@ namespace YahtzyNEW {
         {
             Console.WriteLine("What Column do you want to drop?");
             Console.Write("Theese Are the dies you can save to, write the number of where you want to save your points eg. '1'\n");
+
+            /// Foreach element in player.scoreboard
+            // if player.scoreboard.value == null
+            // consolewriteline( i + item.key)
+            /// For i = 0 
+
+            // 
             if (player.scoreboard["Aces"] == null)
             {
                 Console.WriteLine("1. Aces");

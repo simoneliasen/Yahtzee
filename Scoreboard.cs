@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace YahtzyNEW {
+    /*
     class Scoreboard {
+
         public Dictionary<string, int?> scoreboard;
 
 
@@ -137,4 +139,5 @@ namespace YahtzyNEW {
             }
         }
     }
+    */
 }
