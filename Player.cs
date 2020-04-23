@@ -117,7 +117,14 @@ namespace YahtzyNEW {
         }
         public int Yahtzy()
         {
-            int points = this.dieList.Sum(x => x.DiceValue);
+            int points = 0;
+            foreach (var item in OccurenceOfEachDice)
+            {
+                if (item.Value == 5)
+                {
+                    points = 50;
+                }
+            }
             return points;
         }
 
@@ -152,7 +159,7 @@ namespace YahtzyNEW {
             }
         }
 
-        // Checks occurences of each dice
+        // Calculate occurences of each dice, to calculate more complex scores, such as pairs, of a kind, full house etc.
         public Dictionary<int, int> OccurencesOfDice()
         {
             List<int> diceroll = dieList.Select(dice => dice.DiceValue).ToList();
@@ -172,7 +179,7 @@ namespace YahtzyNEW {
             return this.OccurenceOfEachDice;
         }
 
-        // Not a part of yahtzy apparently, remove
+        // Make one pair avaliable even if there's three of a kind, four of a kind, two pairs, make the player able to choose between them (readline)
         public int OnePair()
         {
             int points = 0;
@@ -187,7 +194,7 @@ namespace YahtzyNEW {
                 return points;
         }
 
-        // Not a part of yahtzy apparently, remove
+        // What if there's three pairs?? (readline?)
         public int TwoPairs()
         {
             int amountofpairs = 0;
@@ -200,14 +207,14 @@ namespace YahtzyNEW {
             }
             if (amountofpairs >= 2)
             {
-                Console.WriteLine("There is two pairs");
+                Console.WriteLine("There are two pairs");
 
             }
-            // Return == item's key * items value for both pairs
-
-            return 1;
+            // Return == item's key * items value for both pairs 
+            return 1; // Calculate correct return
         }
 
+        // works
         public int ThreeOfAKind()
         {
             int points = 0;
@@ -222,6 +229,7 @@ namespace YahtzyNEW {
             return points;
         }
 
+        // works
         public int FourOfAKind()
         {
             int points = 0;
@@ -238,18 +246,17 @@ namespace YahtzyNEW {
 
         public int SmallStraight()
         {
-            // Dummy code, = if:  1,2,3,4      2,3,4,5      3,4,5,6 //  from sorted array
-
+            // Dummy code, if OccurenceOfEachDice.value 1,1,1,1,0,0 // 0,1,1,1,1,0 // 0,0,1,1,1,1 ==  1,2,3,4  //  2,3,4,5 //  3,4,5,6 //
             return 1;
         }
 
         public int LargeStraight()
         {
-            // dummy code = if: 1,2,3,4,5        2,3,4,5,6     // from sorted array
-          
+            // Dummy code, if OccurenceOfEachDice.value 1,1,1,1,1,0 // 0,1,1,1,1,1 //  ==  1,2,3,4,5  //  2,3,4,5,6
             return 1;
         }
 
+        // works
         public int FullHouse()
         {
             int points = 0;
@@ -268,7 +275,6 @@ namespace YahtzyNEW {
                     threeofakind = true;
                 }
             }
-
             if (pair && threeofakind)
             {
                 points = 25;
