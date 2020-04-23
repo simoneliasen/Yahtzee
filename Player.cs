@@ -24,11 +24,9 @@ namespace YahtzyNEW {
                 ["Aces"] = null,
                 ["Twos"] = null,
                 ["Threes"] = null,
-                ["Threes"] = null,
                 ["Fours"] = null,
                 ["Fives"] = null,
                 ["Sixes"] = null,
-
                 ["One Pair"] = 0,
                 ["Two Pairs"] = 0,
                 ["Three Of A Kind"] = 0,
@@ -36,7 +34,6 @@ namespace YahtzyNEW {
                 ["Full House"] = 0,
                 ["Small Straight"] = 0,
                 ["Large Straight"] = 0,
-
                 ["Yahtzee"] = null,
                 ["Chance"] = null
             };
@@ -63,7 +60,6 @@ namespace YahtzyNEW {
         {
             if (PlayerRolls != 0)
             {
-
                 foreach (Dice dice in dieList)
                 {
                     dice.Roll();
@@ -80,12 +76,21 @@ namespace YahtzyNEW {
             Console.WriteLine(this.PlayerRolls + " rolls left");
         }
 
-        // Assign points
+        // Assign points ( could be made into a loop probably)
+
+        public int UpperSectionscores(int score = 0)
+        {
+            int points = this.dieList.Where(x => x.DiceValue.Equals(score)).Count() * score;
+            return points;
+        }
+
+        /*
         public int Aces() // int as input perhaps
         {
             int points = this.dieList.Where(x => x.DiceValue.Equals(1)).Count();
             return points;
         }
+
         public int Twos()
         {
             int points = this.dieList.Where(x => x.DiceValue.Equals(2)).Count() * 2;
@@ -111,12 +116,14 @@ namespace YahtzyNEW {
             int points = this.dieList.Where(x => x.DiceValue.Equals(6)).Count() * 6;
             return points;
         }
-        public int Chance()
+        */
+
+        public int Chance() // works
         {
             int points = this.dieList.Sum(x => x.DiceValue);
             return points;
         }
-        public int Yahtzy()
+        public int Yahtzy() // works
         {
             int points = 0;
             foreach (var item in OccurenceOfEachDice)
@@ -151,7 +158,7 @@ namespace YahtzyNEW {
         }
 
         // Check if viable for bonuspoints
-        private void Bonus()
+        private void Bonus() // works
         {
             if (TotalSum() >= 63)
             {

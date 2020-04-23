@@ -113,7 +113,7 @@ namespace YahtzyNEW {
                     Exit();
                     break;
                 case ("save"):
-                    ScorePossibilities(player); //Should theese classes be in player?
+                    ScorePossibilities(player);  //should this be in player class?
                     break;
                 case ("release"):
                     Release(player);
@@ -203,27 +203,27 @@ namespace YahtzyNEW {
             // would be cool if this was integrated in print
             // print play.scoreboard["aces"] == null && player.Aces >=! print green)
             Console.Write("Theese Are the dies you can save to, write the number of where you want to save your points eg. '1'\n");
-            if (player.scoreboard["Aces"] == null && player.Aces() >= 1)
+            if (player.scoreboard["Aces"] == null && player.UpperSectionscores(1) >= 1)
             {
                 Console.WriteLine("1. Aces");
             }
-            if (player.scoreboard["Twos"] == null && player.Twos() >= 1)
+            if (player.scoreboard["Twos"] == null && player.UpperSectionscores(2) >= 1)
             {
                 Console.WriteLine("2. Twos");
             }
-            if (player.scoreboard["Threes"] == null && player.Threes() >= 1)
+            if (player.scoreboard["Threes"] == null && player.UpperSectionscores(3) >= 1)
             {
                 Console.WriteLine("3. Threes");
             }
-            if (player.scoreboard["Fours"] == null && player.Fours() >= 1)
+            if (player.scoreboard["Fours"] == null && player.UpperSectionscores(4) >= 1)
             {
                 Console.WriteLine("4. Fours");
             }
-            if (player.scoreboard["Fives"] == null && player.Fives() >= 1)
+            if (player.scoreboard["Fives"] == null && player.UpperSectionscores(5) >= 1)
             {
                 Console.WriteLine("5. Fives");
             }
-            if (player.scoreboard["Sixes"] == null && player.Sixes() >= 1)
+            if (player.scoreboard["Sixes"] == null && player.UpperSectionscores(6) >= 1)
             {
                 Console.WriteLine("6. Sixes");
             }
@@ -239,7 +239,7 @@ namespace YahtzyNEW {
             {
                 Console.WriteLine("9. One pair");
             }
-            if (player.scoreboard["Two Pairs"] == null && player.TwoPairs() >= 1)  // Always shown displays 1
+            if (player.scoreboard["Two Pairs"] == null && player.TwoPairs() >= 1)
             {
                 Console.WriteLine("10. Two Pairs");
             }
@@ -274,27 +274,27 @@ namespace YahtzyNEW {
                 // Would be awesome if we could make this a loop, tuple dict? 1 = index, aces == key aces in method could be key aswell?
                 // Or put together with above if-statements
                 case ("1"):
-                    player.scoreboard["Aces"] = player.Aces();
+                    player.scoreboard["Aces"] = player.UpperSectionscores(1);
                     player.PlayerTurn = false;
                     break;
                 case ("2"):
-                    player.scoreboard["Twos"] = player.Twos();
+                    player.scoreboard["Twos"] = player.UpperSectionscores(2);
                     player.PlayerTurn = false;
                     break;
                 case ("3"):
-                    player.scoreboard["Threes"] = player.Threes();
+                    player.scoreboard["Threes"] = player.UpperSectionscores(3);
                     player.PlayerTurn = false;
                     break;
                 case ("4"):
-                    player.scoreboard["Fours"] = player.Fours();
+                    player.scoreboard["Fours"] = player.UpperSectionscores(4);
                     player.PlayerTurn = false;
                     break;
                 case ("5"):
-                    player.scoreboard["Fives"] = player.Fives();
+                    player.scoreboard["Fives"] = player.UpperSectionscores(5);
                     player.PlayerTurn = false;
                     break;
                 case ("6"):
-                    player.scoreboard["Sixes"] = player.Sixes();
+                    player.scoreboard["Sixes"] = player.UpperSectionscores(6);
                     player.PlayerTurn = false;
                     break;
                 case ("7"):
@@ -305,6 +305,8 @@ namespace YahtzyNEW {
                     player.scoreboard["Yahtzee"] = player.Yahtzy();
                     player.PlayerTurn = false;
                     break;
+
+                // Uppersection Doesn't get added for some weird reason
                 case ("9"):
                     player.scoreboard["One Pair"] = player.OnePair();
                     player.PlayerTurn = false;
@@ -342,151 +344,42 @@ namespace YahtzyNEW {
         // Show scores that the player can drop, after entering "drop"
         public void Drop(Player player)
         {
-            Console.WriteLine("What Column do you want to drop?");
-            Console.Write("Theese Are the dies you can save to, write the number of where you want to save your points eg. '1'\n");
+            Console.WriteLine("What Column do you want to drop? \ntype the number you want to drop");
 
-            /// Foreach element in player.scoreboard
-            // if player.scoreboard.value == null
-            // consolewriteline( i + item.key)
-            /// For i = 0 
+            // List that will contain values that can be dropped, based on below criteria
+            Dictionary<int, string> droppablevalues = new Dictionary<int, string>();
 
-            // 
-            if (player.scoreboard["Aces"] == null)
+            // Print all values that can be dropped
+            for (int i = player.scoreboard.Count - 1; i >= 0; i--)
             {
-                Console.WriteLine("1. Aces");
-            }
-            if (player.scoreboard["Twos"] == null)
-            {
-                Console.WriteLine("2. Twos");
-            }
-            if (player.scoreboard["Threes"] == null)
-            {
-                Console.WriteLine("3. Threes");
-            }
-            if (player.scoreboard["Fours"] == null)
-            {
-                Console.WriteLine("4. Fours");
-            }
-            if (player.scoreboard["Fives"] == null)
-            {
-                Console.WriteLine("5. Fives");
-            }
-            if (player.scoreboard["Sixes"] == null)
-            {
-                Console.WriteLine("6. Sixes");
-            }
-            if (player.scoreboard["Chance"] == null)
-            {
-                Console.WriteLine("7. Chance");
-            }
-            if (player.scoreboard["Yahtzee"] == null)
-            {
-                Console.WriteLine("8. Yahtzy");
-            }
-            if (player.scoreboard["One Pair"] == null)
-            {
-                Console.WriteLine("9. One pair");
-            }
-            if (player.scoreboard["Two Pairs"] == null)
-            {
-                Console.WriteLine("10. Two Pairs");
-            }
-            if (player.scoreboard["Three Of A Kind"] == null)
-            {
-                Console.WriteLine("11. Three Of A Kind");
-            }
-            if (player.scoreboard["Four Of A Kind"] == null)
-            {
-                Console.WriteLine("12. Four Of A Kind");
-            }
-            if (player.scoreboard["Full House"] == null)
-            {
-                Console.WriteLine("13. Full House");
-            }
-            if (player.scoreboard["Small Straight"] == null)
-            {
-                Console.WriteLine("14. Small Straight");
-            }
-            if (player.scoreboard["Large Straight"] == null)
-            {
-                Console.WriteLine("15. Large Straight");
-            }
-            DropScore(player);
-        }
+                var item = player.scoreboard.ElementAt(i);
+                var itemKey = item.Key; // can maybe be removed, or renamed for clarity
 
-        // Drop score based by player input
-        public void DropScore(Player player)
-        {
-            string Input = Console.ReadLine();
-            switch (Input)
+                // if item == null (if hasn't been assigned)
+                if (player.scoreboard[itemKey] == null)
+                {
+                    // Write index + name
+                    Console.WriteLine(i + "." + itemKey);
+                    // Append to droppable 
+                    droppablevalues.Add(i, itemKey);
+                }
+            }
+
+            int input = Convert.ToInt32(Console.ReadLine());
+            // if dictionary of droppable values contains input
+            if (droppablevalues.ContainsKey(input))
             {
-                case ("1"):
-                    player.scoreboard["Aces"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("2"):
-                    player.scoreboard["Twos"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("3"):
-                    player.scoreboard["Threes"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("4"):
-                    player.scoreboard["Fours"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("5"):
-                    player.scoreboard["Fives"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("6"):
-                    player.scoreboard["Sixes"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("7"):
-                    player.scoreboard["Chance"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("8"):
-                    player.scoreboard["Yahtzee"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("9"):
-                    player.scoreboard["One Pair"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("10"):
-                    player.scoreboard["Two Pairs"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("11"):
-                    player.scoreboard["Three Of A Kind"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("12"):
-                    player.scoreboard["Four Of A Kind"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("13"):
-                    player.scoreboard["Full House"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("14"):
-                    player.scoreboard["Small Straight"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                case ("15"):
-                    player.scoreboard["Large Straight"] = 0;
-                    player.PlayerTurn = false;
-                    break;
-                default:
-                    Console.WriteLine("Doesn't look like you have the right dies, either 'release' 'roll' or 'drop' to select a score to skip"); // redirect user so he can either release or cancel die (se it to 0)
-                    break;
+                //droppables values key indexet, som der tastes nummer ind på.
+                // herfra fås navnet på scoren
+                string nameofscore = droppablevalues[input];
+                // name of score == key i player.scoreboard
+                player.scoreboard[nameofscore] = 0;
+                player.PlayerTurn = false;
             }
         }
 
-        // Ends game after 13 rounds
+
+        // Ends game after 13 rounds and ranks player scores
         public bool GameEnd()
         {
             if (roundNumber == 13) {

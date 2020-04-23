@@ -8,6 +8,7 @@ namespace YahtzyNEW {
     public int DiceValue { get; set; }
     public bool HoldState { get; set; }
     public int Bias = 0;
+
     // bias variable and one roll method perhaps?
     public int Roll() // Make distribution method (current is weak)
     {
