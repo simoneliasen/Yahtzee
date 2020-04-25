@@ -1,7 +1,7 @@
-﻿/*Yahtzee 1.0
- * The following yahtzee game is build upon a modular approach, where the nesting of classes, should/would represent a real-world Yahtzee game, like so:
+﻿/*Yahtzy 1.0
+ * The following yahtzy game is build upon a modular approach, where the nesting of classes, should/would represent a real-world Yahtzy game, like so:
  * A die is given in the context of five other dice, which is held by a player that has an individual score, which exist in the context of other players
- * This is what makes up a Yahtzee game. From this the following classes are created to describe it. 
+ * This is what makes up a yahtzy game. From this the following classes are created to describe it. 
  * 
  * Classes
  *  - Program: serves as the starting point that initializes the game.
@@ -19,7 +19,7 @@
  *   
  * Assumptions: 
  *   - In the application the biased dice is made in one class, with three options of biaseness, as making an advance function for distribution
- *     in a yahtzee game seemed over the top.
+ *     in a yahtzy game seemed over the top.
  *  
  *  - The change of rolls method is applied to all players
  *  
@@ -32,19 +32,39 @@
  * Imported Libraries:
  *   - LINQ:
  *   
- * Notes:
- *   - It should be noticed that this programs development was influenced by stackoverflow.
+ *   // Iteration of dictionariy == bad
+ *   
+ *   
+ *   Game rules
+ *   https://en.wikipedia.org/wiki/Yatzy
  */
 
-// Make on Exception that checks input for validness
+
+// Fix scores for good
+// Make scoreboard class
+// Optimize Possible + Add method for adding scores
+// Try/catch implementation
+// More clever dice
+// access modifiers
+// code conventions
+
+// Ekstra
+// Rebalancering af placering af metoder
+// UI
+// -- Center
+// -- Clear on new round
+// -- Possible scores == green
+// -- Held dice == red
+// straight metoder kan sammenskrives
+// par metoder kan måske sammenskrives
+// UI
 
 using System;
 using System.Collections.Generic;
-using System.Linq; // Enumerable method
+using System.Linq;
 
 namespace YahtzyNEW {
     public class Game {
-        // Set the stage with players, where each individual player has a scoreboard and a list of dies wich contains the individual dies.
         public List<Player> players = new List<Player>();
         public int roundNumber = 0;
         public int AmountOfRolls = 3;
@@ -52,7 +72,7 @@ namespace YahtzyNEW {
         // Get Amount of players and their names
         public void SetupGame()
         {
-            Console.WriteLine("Hey, let's play some Yahtzee! \nType 'help' to see all avaliable commands\nHow many players?");
+            Console.WriteLine("Hey, let's play some Yahtzy! \nType 'help' to see all avaliable commands\nHow many players?");
             int AmountOfPlayers = Convert.ToInt32(Console.ReadLine());
             for (int i = 0; i < AmountOfPlayers; i++)
             {
@@ -62,7 +82,7 @@ namespace YahtzyNEW {
             StartGame();
         }
 
-        // Runs game rounds until conditions of finnished game is fulfilled
+        // Run game rounds until conditions of finished game is fulfilled
         public void StartGame()
         {
             while (!GameEnd())
@@ -72,15 +92,16 @@ namespace YahtzyNEW {
             }
         }
 
-        // Manages rounds and player turns, aswell as resetting for next rounds
+        // Manages rounds and player turns, aswell as resetting for next round
         public void NewRound()
         {
-            foreach (Player player in players)
+            foreach (Player player in players) // A Round
             {
                 Console.WriteLine("\n" + player + "'s turn");
                 player.PlayerRolls = AmountOfRolls;
                 player.CheckIfUpperSectionDone();
-                while (player.PlayerTurn)
+                Release(player);
+                while (player.PlayerTurn)  // A Turn
                 {
                     ReadLine(player);
                     Console.WriteLine("\n\n\n");
@@ -98,7 +119,6 @@ namespace YahtzyNEW {
                     Score(player);
                     player.Roll();
                     player.OccurencesOfDice();
-                    player.OnePair();
                     break;
                 case ("help"):
                     Help();
@@ -140,7 +160,7 @@ namespace YahtzyNEW {
             List<int> holdlist = Console.ReadLine().Split(',').Select(s => int.Parse(s)).ToList();
             foreach (var holddice in holdlist)
             {
-                player.dieList.ElementAt(holddice -1).HoldState = true;
+                player.dieList.ElementAt(holddice - 1).HoldState = true;
             }
         }
 
@@ -156,16 +176,17 @@ namespace YahtzyNEW {
         // Change bias of dice
         public void Bias(Player player)
         {
-            Console.WriteLine("Change bias of your dice:");
+            Console.WriteLine("Change the bias of your dice:");
             Console.WriteLine("1: Lucky dice.");
             Console.WriteLine("0: Fair dice.");
             Console.WriteLine("-1: Unfair dice.");
 
             int newbias = Convert.ToInt32(Console.ReadLine());
+
             foreach (Dice dice in player.dieList)
-                {
-                    dice.Bias = newbias;
-                }
+            {
+                dice.Bias = newbias;
+            }
         }
 
         // Change amount of rolls for player
@@ -174,7 +195,7 @@ namespace YahtzyNEW {
             Console.WriteLine("Enter how many rolls you want pr. turn:");
             this.AmountOfRolls = Convert.ToInt32(Console.ReadLine());
             player.PlayerRolls = AmountOfRolls; // also add rolls for current round
-            Console.WriteLine("Players now have " + AmountOfRolls + " Rolls pr. turn" );
+            Console.WriteLine("Players now have " + AmountOfRolls + " Rolls pr. turn");
         }
 
         // Display scoreboard (text box)
@@ -200,140 +221,138 @@ namespace YahtzyNEW {
         // Checks if no previos score exist, and if the dicehand fulfills criteria for score possibility
         public void ScorePossibilities(Player player)
         {
-            // would be cool if this was integrated in print
-            // print play.scoreboard["aces"] == null && player.Aces >=! print green)
             Console.Write("Theese Are the dies you can save to, write the number of where you want to save your points eg. '1'\n");
-            if (player.scoreboard["Aces"] == null && player.UpperSectionscores(1) >= 1)
+
+            if (player.scoreboard["Ones"] == null && player.Ones(false) >= 1)
             {
-                Console.WriteLine("1. Aces");
+                Console.WriteLine("1. Ones");
             }
-            if (player.scoreboard["Twos"] == null && player.UpperSectionscores(2) >= 1)
+            if (player.scoreboard["Twos"] == null && player.Twos(false) >= 1)
             {
                 Console.WriteLine("2. Twos");
             }
-            if (player.scoreboard["Threes"] == null && player.UpperSectionscores(3) >= 1)
+            if (player.scoreboard["Threes"] == null && player.Threes(false) >= 1)
             {
                 Console.WriteLine("3. Threes");
             }
-            if (player.scoreboard["Fours"] == null && player.UpperSectionscores(4) >= 1)
+            if (player.scoreboard["Fours"] == null && player.Fours(false) >= 1)
             {
                 Console.WriteLine("4. Fours");
             }
-            if (player.scoreboard["Fives"] == null && player.UpperSectionscores(5) >= 1)
+            if (player.scoreboard["Fives"] == null && player.Fives(false) >= 1)
             {
                 Console.WriteLine("5. Fives");
             }
-            if (player.scoreboard["Sixes"] == null && player.UpperSectionscores(6) >= 1)
+            if (player.scoreboard["Sixes"] == null && player.Sixes(false) >= 1)
             {
                 Console.WriteLine("6. Sixes");
             }
-            if (player.scoreboard["Chance"] == null)
+            if (player.scoreboard.ContainsKey("One Pair") &&
+                player.scoreboard["One Pair"] == null &&
+                player.OnePair(false) >= 1)
             {
-                Console.WriteLine("7. Chance");
+                Console.WriteLine("7. One pair");
             }
-            if (player.scoreboard["Yahtzee"] == null && player.Yahtzy() >= 1) 
+            if (player.scoreboard.ContainsKey("Two Pairs") &&
+              player.scoreboard["Two Pairs"] == null &&
+              player.TwoPairs(false) >= 1)
             {
-                Console.WriteLine("8. Yahtzy");
+                Console.WriteLine("8. Two Pairs");
             }
-            if (player.scoreboard["One Pair"] == null && player.OnePair() >= 1)
+            if (player.scoreboard.ContainsKey("Three Of A Kind") &&
+              player.scoreboard["Three Of A Kind"] == null &&
+              player.ThreeOfAKind(false) >= 1)
             {
-                Console.WriteLine("9. One pair");
+                Console.WriteLine("9. Three Of A Kind");
             }
-            if (player.scoreboard["Two Pairs"] == null && player.TwoPairs() >= 1)
+            if (player.scoreboard.ContainsKey("Four Of A Kind") &&
+              player.scoreboard["Four Of A Kind"] == null &&
+              player.FourOfAKind(false) >= 1)
             {
-                Console.WriteLine("10. Two Pairs");
+                Console.WriteLine("10. Four Of A Kind");
             }
-            if (player.scoreboard["Three Of A Kind"] == null && player.ThreeOfAKind() >= 1) 
+            if (player.scoreboard.ContainsKey("Full House") &&
+              player.scoreboard["Full House"] == null &&
+              player.FullHouse(false) >= 1)
             {
-                Console.WriteLine("11. Three Of A Kind");
+                Console.WriteLine("11. Full House");
             }
-            if (player.scoreboard["Four Of A Kind"] == null && player.FourOfAKind() >= 1)
+            if (player.scoreboard.ContainsKey("Small Straight") &&
+              player.scoreboard["Small Straight"] == null &&
+              player.SmallStraight(false) >= 1)
             {
-                Console.WriteLine("12. Four Of A Kind");
+                Console.WriteLine("12. Small Straight");
             }
-            if (player.scoreboard["Full House"] == null && player.FullHouse() >= 1) 
+            if (player.scoreboard.ContainsKey("Large Straight") &&
+            player.scoreboard["Large Straight"] == null &&
+            player.LargeStraight(false) >= 1)
             {
-                Console.WriteLine("13. Full House");
+                Console.WriteLine("13. Large Straight");
             }
-            if (player.scoreboard["Small Straight"] == null && player.SmallStraight() >= 1) // Always shown displays 1
+            if (player.scoreboard.ContainsKey("Chance") &&
+            player.scoreboard["Chance"] == null &&
+            player.Chance(false) >= 1)
             {
-                Console.WriteLine("14. Small Straight");
+                Console.WriteLine("14. Chance");
             }
-            if (player.scoreboard["Large Straight"] == null && player.LargeStraight() >= 1)  // Always shown displays 1
+            if (player.scoreboard.ContainsKey("Yahtzy") &&
+            player.scoreboard["Yahtzy"] == null &&
+            player.Yahtzy(false) >= 1)
             {
-                Console.WriteLine("15. Large Straight");
+                Console.WriteLine("15. Yahtzy");
             }
             SaveScore(player);
         }
 
         // Save the score selected by user
-        public void SaveScore(Player player)
+        public void SaveScore(Player player) // could pass if possible from other method
         {
             switch (Console.ReadLine())
             {
-                // Would be awesome if we could make this a loop, tuple dict? 1 = index, aces == key aces in method could be key aswell?
-                // Or put together with above if-statements
                 case ("1"):
-                    player.scoreboard["Aces"] = player.UpperSectionscores(1);
-                    player.PlayerTurn = false;
+                    player.Ones(true);
                     break;
                 case ("2"):
-                    player.scoreboard["Twos"] = player.UpperSectionscores(2);
-                    player.PlayerTurn = false;
+                    player.Twos(true);
                     break;
                 case ("3"):
-                    player.scoreboard["Threes"] = player.UpperSectionscores(3);
-                    player.PlayerTurn = false;
+                    player.Threes(true);
                     break;
                 case ("4"):
-                    player.scoreboard["Fours"] = player.UpperSectionscores(4);
-                    player.PlayerTurn = false;
+                    player.Fours(true);
                     break;
                 case ("5"):
-                    player.scoreboard["Fives"] = player.UpperSectionscores(5);
-                    player.PlayerTurn = false;
+                    player.Fives(true);
                     break;
                 case ("6"):
-                    player.scoreboard["Sixes"] = player.UpperSectionscores(6);
-                    player.PlayerTurn = false;
+                    player.Sixes(true);
                     break;
                 case ("7"):
-                    player.scoreboard["Chance"] = player.Chance();
-                    player.PlayerTurn = false;
+                    player.OnePair(true);
                     break;
                 case ("8"):
-                    player.scoreboard["Yahtzee"] = player.Yahtzy();
-                    player.PlayerTurn = false;
+                    player.TwoPairs(true);
                     break;
-
-                // Uppersection Doesn't get added for some weird reason
                 case ("9"):
-                    player.scoreboard["One Pair"] = player.OnePair();
-                    player.PlayerTurn = false;
+                    player.ThreeOfAKind(true);
                     break;
                 case ("10"):
-                    player.scoreboard["Two Pairs"] = player.TwoPairs();
-                    player.PlayerTurn = false;
+                    player.FourOfAKind(true);
                     break;
                 case ("11"):
-                    player.scoreboard["Three Of A Kind"] = player.ThreeOfAKind();
-                    player.PlayerTurn = false;
+                    player.FullHouse(true);
                     break;
                 case ("12"):
-                    player.scoreboard["Four Of A Kind"] = player.FourOfAKind();
-                    player.PlayerTurn = false;
+                    player.SmallStraight(true);
                     break;
                 case ("13"):
-                    player.scoreboard["Full House"] = player.FullHouse();
-                    player.PlayerTurn = false;
+                    player.LargeStraight(true);
                     break;
                 case ("14"):
-                    player.scoreboard["Small Straight"] = player.SmallStraight();
-                    player.PlayerTurn = false;
+                    player.Chance(true);
                     break;
                 case ("15"):
-                    player.scoreboard["Large Straight"] = player.LargeStraight();
-                    player.PlayerTurn = false;
+                    player.Yahtzy(true);
                     break;
                 default:
                     Console.WriteLine("Doesn't look like you have the right dies, either 'release' 'roll' or 'drop' to select a score to skip"); // redirect user so he can either release or cancel die (se it to 0)
@@ -353,36 +372,36 @@ namespace YahtzyNEW {
             for (int i = player.scoreboard.Count - 1; i >= 0; i--)
             {
                 var item = player.scoreboard.ElementAt(i);
-                var itemKey = item.Key; // can maybe be removed, or renamed for clarity
+                var scorename = item.Key;
 
                 // if item == null (if hasn't been assigned)
-                if (player.scoreboard[itemKey] == null)
+                if (player.scoreboard[scorename] == null)
                 {
-                    // Write index + name
-                    Console.WriteLine(i + "." + itemKey);
+                    // Write index + name 
+                    Console.WriteLine(i + "." + scorename);
                     // Append to droppable 
-                    droppablevalues.Add(i, itemKey);
+                    droppablevalues.Add(i, scorename);
                 }
             }
 
             int input = Convert.ToInt32(Console.ReadLine());
-            // if dictionary of droppable values contains input
+
+            // if input matches index of list
             if (droppablevalues.ContainsKey(input))
             {
-                //droppables values key indexet, som der tastes nummer ind på.
-                // herfra fås navnet på scoren
+                // ise input to get value, which corresponds to the score name of input
                 string nameofscore = droppablevalues[input];
-                // name of score == key i player.scoreboard
+                // set scoreboard to 0, from the key to the scoreboard which we just got
                 player.scoreboard[nameofscore] = 0;
                 player.PlayerTurn = false;
             }
         }
 
-
         // Ends game after 13 rounds and ranks player scores
         public bool GameEnd()
         {
-            if (roundNumber == 13) {
+            if (roundNumber == 15)
+            {
                 List<Player> RankedScores = players.OrderByDescending(player => player.TotalSum()).ToList();
                 int Ranking = 1;
                 foreach (Player player in RankedScores)
