@@ -1,30 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace YahtzyNEW {
+namespace Yahtzy {
     public class Dice {
-        public Random rand = new Random();
-        public int DiceValue { get; set; }
-        public bool HoldState { get; set; }
-        public int Bias = 0;
+        internal int DiceValue { get; set; }
+        internal bool HoldState { get; set; }
+        private Random Rand { get; } = new Random();
+        internal int Bias { get; set; } = 0;
+        internal int BiasWeight { get; set; } = 1;
 
-        /*
-                        int BiasPercentage = 100000;
-
-                        List<int> DiceSides = new List<int>() { 1, 2, 3, 4, 5, 6 };
-
-                        int SixesRatio = BiasPercentage;
-                        int FivesRatio = Convert.ToInt32(BiasPercentage * 0.70);
-                        int FoursRatio = Convert.ToInt32(BiasPercentage * 0.50);
-
-                        DiceSides.AddRange(Enumerable.Repeat(6, SixesRatio));
-                        DiceSides.AddRange(Enumerable.Repeat(5, FivesRatio));
-                        DiceSides.AddRange(Enumerable.Repeat(4, FoursRatio));
-
-                        this.DiceValue = DiceSides[rand.Next(0, DiceSides.Count)];
-         */
-
-        public virtual int Roll()
+        protected internal int Roll()
         {
+            var chanceDistribution = new List<int>() { 1, 2, 3, 4, 5, 6 };
             switch (HoldState)
             {
                 case false:
@@ -32,15 +20,23 @@ namespace YahtzyNEW {
                         switch (Bias)
                         {
                             case -1:
-                                int[] negativeRandArray = { 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 5, 6, };
-                                DiceValue = negativeRandArray[rand.Next(0, negativeRandArray.Length)];
+                                var twosRatio = Convert.ToInt32(BiasWeight * 0.75);
+                                var threesRatio = Convert.ToInt32(BiasWeight * 0.50);
+                                chanceDistribution.AddRange(Enumerable.Repeat(1, BiasWeight));
+                                chanceDistribution.AddRange(Enumerable.Repeat(2, twosRatio));
+                                chanceDistribution.AddRange(Enumerable.Repeat(3, threesRatio));
+                                DiceValue = chanceDistribution[Rand.Next(0, chanceDistribution.Count)];
                                 break;
                             case 0:
-                                DiceValue = rand.Next(1, 7);
+                                DiceValue = Rand.Next(1, 7);
                                 break;
                             case 1:
-                                int[] positiveeRandArray = { 1, 2, 3, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6 };
-                                DiceValue = positiveeRandArray[rand.Next(0, positiveeRandArray.Length)];
+                                var fivesRatio = Convert.ToInt32(BiasWeight * 0.75);
+                                var foursRatio = Convert.ToInt32(BiasWeight * 0.50);
+                                chanceDistribution.AddRange(Enumerable.Repeat(6, BiasWeight));
+                                chanceDistribution.AddRange(Enumerable.Repeat(5, fivesRatio));
+                                chanceDistribution.AddRange(Enumerable.Repeat(4, foursRatio));
+                                DiceValue = chanceDistribution[Rand.Next(0, chanceDistribution.Count)];
                                 break;
                         }
                         return DiceValue;

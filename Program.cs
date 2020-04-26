@@ -39,12 +39,12 @@
  *   https://en.wikipedia.org/wiki/Yatzy
  */
 
-namespace YahtzyNEW {
+namespace Yahtzy {
     internal class Program {
         private static void Main(string[] args)
         {
-            Game Yahtzy = new Game();
-            Yahtzy.SetupGame();
+            var yahtzy = new Game();
+            yahtzy.SetupGame();
         }
     }
 }
