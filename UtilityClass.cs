@@ -4,6 +4,7 @@ namespace Yahtzy
 {
     internal static class UtilityClass
     {
+        // Red text for warnings.
         internal static void RedText(string input)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -11,6 +12,7 @@ namespace Yahtzy
             Console.ResetColor();
         }
 
+        // Yellow text for important messages.
         internal static void YellowText(string input)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -18,6 +20,7 @@ namespace Yahtzy
             Console.ResetColor();
         }
 
+        // Green text for success messages.
         internal static void GreenText(string input)
         {
             Console.ForegroundColor = ConsoleColor.Green;

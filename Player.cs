@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Yahtzy {
-    public class Player {
+namespace Yahtzy
+{
+    public class Player
+    {
         private string Name { get; }
         internal bool UpperSection { get; set; } = true;
         internal int PlayerRolls { get; set; } = 3;
@@ -35,10 +37,10 @@ namespace Yahtzy {
             };
         }
 
-        // Return name 
+        // Return name. 
         public override string ToString() => Name;
 
-        //Roll players dice
+        //Roll players dice.
         internal void Roll()
         {
             if (PlayerRolls != 0)
@@ -56,6 +58,7 @@ namespace Yahtzy {
                             break;
                     }
                 }
+
                 PlayerRolls--;
             }
             else if (PlayerRolls == 0)
@@ -65,17 +68,18 @@ namespace Yahtzy {
                     Console.Write($"{dice.DiceValue} ");
                 }
             }
+
             Console.WriteLine("\n---------------------------");
             Console.Write($"{PlayerRolls} rolls left\n");
             Console.WriteLine("---------------------------");
         }
 
-        // Release lower section, when upper section is done, (null == available)
+        // Release lower section, when upper section is done. (null == available)
         internal void CheckIfUpperSectionDone()
         {
             if (Scoreboard["Ones"] == null || Scoreboard["Twos"] == null || Scoreboard["Threes"] == null ||
                 Scoreboard["Fours"] == null || Scoreboard["Fives"] == null || Scoreboard["Sixes"] == null) return;
-            // One pair is used as a check-value, if "one pair" exists, all should exists
+
             if (Scoreboard.ContainsKey("One Pair")) return;
             Scoreboard.Add("One Pair", null);
             Scoreboard.Add("Two Pairs", null);
@@ -90,7 +94,7 @@ namespace Yahtzy {
             UpperSection = false;
         }
 
-        // Calculate occurrences of each dice, to calculate scores for lower section.
+        // Calculate how many times each dice occur, to calculate more complex scores in the lower section.
         internal void OccurrencesOfDice()
         {
             var diceList = DieList.Select(dice => dice.DiceValue).ToList();
@@ -101,7 +105,8 @@ namespace Yahtzy {
             }
         }
 
-        // Check if possible or assign depending on bool input
+        // Check if score is available based on occurence of each dice, and assigns to scoreboard if bool input is true.
+        // The same is the case for the renaming score calculations in the lower section.
         internal int OnePair(bool assign = false)
         {
             var points = 0;
@@ -113,10 +118,10 @@ namespace Yahtzy {
                     Scoreboard["One Pair"] = points;
                 }
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int TwoPairs(bool assign = false)
         {
             var points = 0;
@@ -127,16 +132,17 @@ namespace Yahtzy {
                 amountOfPairs++;
                 tempPoints += 2 * item.Key;
             }
+
             if (amountOfPairs < 2) return points;
             points = tempPoints;
             if (assign)
             {
                 Scoreboard["Two Pairs"] = points;
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int ThreeOfAKind(bool assign = false)
         {
             var points = 0;
@@ -148,10 +154,11 @@ namespace Yahtzy {
                     Scoreboard["Three Of A Kind"] = points;
                 }
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
+  
         internal int FourOfAKind(bool assign = false)
         {
             var points = 0;
@@ -163,15 +170,15 @@ namespace Yahtzy {
                     Scoreboard["Four Of A Kind"] = points;
                 }
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int SmallStraight(bool assign = false)
         {
             var points = 0;
             var occurenceArray = OccurenceOfEachDice.Values.ToArray();
-            int[] smallStraightOccurence = { 1, 1, 1, 1, 1, 0 };
+            int[] smallStraightOccurence = {1, 1, 1, 1, 1, 0};
             var matchCheck = occurenceArray.SequenceEqual(smallStraightOccurence);
             if (!matchCheck) return points;
             points = 15;
@@ -179,15 +186,15 @@ namespace Yahtzy {
             {
                 Scoreboard["Small Straight"] = points;
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int LargeStraight(bool assign = false)
         {
             var points = 0;
             var occurenceArray = OccurenceOfEachDice.Values.ToArray();
-            int[] largeStraightOccurence = { 0, 1, 1, 1, 1, 1 };
+            int[] largeStraightOccurence = {0, 1, 1, 1, 1, 1};
             var matchCheck = occurenceArray.SequenceEqual(largeStraightOccurence);
             if (!matchCheck) return points;
             points = 20;
@@ -195,10 +202,10 @@ namespace Yahtzy {
             {
                 Scoreboard["Large Straight"] = points;
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int FullHouse(bool assign = false)
         {
             var points = 0;
@@ -219,16 +226,17 @@ namespace Yahtzy {
                         break;
                 }
             }
+
             if (!pair || !threeOfAKind) return points;
             points = tempPoints;
             if (assign)
             {
                 Scoreboard["Full House"] = points;
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int Yahtzy(bool assign = false)
         {
             var points = 0;
@@ -240,30 +248,29 @@ namespace Yahtzy {
                     Scoreboard["Yahtzy"] = points;
                 }
             }
+
             return points;
         }
 
-        // Check if possible or assign depending on bool input
         internal int Chance(bool assign = false)
         {
             if (assign)
             {
                 Scoreboard["Chance"] = DieList.Sum(x => x.DiceValue);
             }
+
             return DieList.Sum(x => x.DiceValue);
         }
 
-        // Check if viable for bonus points
+        // Assigns bonus points to dictionary, if total sum is above 63 in upper section.
         private void Bonus()
         {
             if (!(TotalSum() >= 63)) return;
             Scoreboard.Add("Bonus", 50);
-            UtilityClass.GreenText("You got a bonus of 50 points, because you got over 63 points in the upper section");
+            UtilityClass.GreenText("You got 50 bonus points, because you got over 63 points in the upper section");
         }
 
-        // Check if possible or assign depending on bool input
+        // Get players total sum.
         internal int? TotalSum() => Scoreboard.Sum(x => x.Value);
     }
 }
-
-
