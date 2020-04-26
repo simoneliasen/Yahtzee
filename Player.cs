@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq; // Enumerable method
-using System.Collections.Specialized;
+using System.Linq;
 
 namespace YahtzyNEW {
-    //Stores all data on the user, their scoreboard, score possibilities and manage their list of dies.
     public class Player {
         public string Name { get; set; }
         public int PlayerRolls = 3;
@@ -13,6 +10,7 @@ namespace YahtzyNEW {
         public List<Dice> dieList = Enumerable.Range(1, 5).Select(i => new Dice()).ToList();
         public Dictionary<int, int> OccurenceOfEachDice;
         public Dictionary<string, int?> scoreboard;
+        public bool UpperSection = true;
 
         public Player(string name)
         {
@@ -38,31 +36,30 @@ namespace YahtzyNEW {
         }
 
         // Return name by default
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
 
         //Roll Players dice
         public void Roll()
         {
             if (PlayerRolls != 0)
             {
-                foreach (Dice dice in dieList)
+                for (int i = 0; i < dieList.Count; i++)
                 {
+                    Dice dice = dieList[i];
                     dice.Roll();
-                    if (dice.HoldState == true)
+                    switch (dice.HoldState)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(dice.DiceValue + " ");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.Write(dice.DiceValue + " ");
+                        case true:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(dice.DiceValue + " ");
+                            Console.ResetColor();
+                            break;
+                        default:
+                            Console.Write(dice.DiceValue + " ");
+                            break;
                     }
                 }
-                this.PlayerRolls--;
+                PlayerRolls--;
             }
             else if (PlayerRolls == 0)
             {
@@ -72,11 +69,11 @@ namespace YahtzyNEW {
                 }
             }
             Console.WriteLine("\n---------------------------");
-            Console.WriteLine(this.PlayerRolls + " rolls left");
+            Console.WriteLine(PlayerRolls + " rolls left");
             Console.WriteLine("---------------------------");
         }
 
-        // Release lower section, when upper section is done, null == released
+        // Release lower section, when upper section is done, (null == avaliable)
         public void CheckIfUpperSectionDone()
         {
             if (scoreboard["Ones"] != null &&
@@ -86,99 +83,59 @@ namespace YahtzyNEW {
             scoreboard["Fives"] != null &&
             scoreboard["Sixes"] != null)
             {
-                // One pair is used as a check-value, if one pair exsists, all exists
+                // One pair is used as a check-value, if "one pair" exists, all should exists
                 if (!scoreboard.ContainsKey("One Pair"))
                 {
-                    this.scoreboard.Add("One Pair", null);
-                    this.scoreboard.Add("Two Pairs", null);
-                    this.scoreboard.Add("Three Of A Kind", null);
-                    this.scoreboard.Add("Four Of A Kind", null);
-                    this.scoreboard.Add("Full House", null);
-                    this.scoreboard.Add("Small Straight", null);
-                    this.scoreboard.Add("Large Straight", null);
-                    this.scoreboard.Add("Yahtzy", null);
-                    this.scoreboard.Add("Chance", null);
+                    scoreboard.Add("One Pair", null);
+                    scoreboard.Add("Two Pairs", null);
+                    scoreboard.Add("Three Of A Kind", null);
+                    scoreboard.Add("Four Of A Kind", null);
+                    scoreboard.Add("Full House", null);
+                    scoreboard.Add("Small Straight", null);
+                    scoreboard.Add("Large Straight", null);
+                    scoreboard.Add("Yahtzy", null);
+                    scoreboard.Add("Chance", null);
                     Bonus();
+                    UpperSection = false;
                 }
             }
         }
 
-        // Check if uppersection scores are avaliable or assign score
-        /*
-         public int UpperSectionscores(int score, bool assign = false)
-         {
-
-             int points = this.dieList.Where(x => x.DiceValue.Equals(score)).Count() * score;
-             return points;
-         }
-         */
-
-        public int Ones(bool assign = false)
+        // Check if scores are possible, and assign by userInput
+        public void UpperSectionScores()
         {
-            int points = this.dieList.Where(x => x.DiceValue.Equals(1)).Count();
-
-            if (assign == true)
+            for (int i = 0; i < scoreboard.Count; i++)
             {
-                scoreboard["Ones"] = points * 1;
-                PlayerTurn = false;
+                var item = scoreboard.ElementAt(i);
+                var itemKey = item.Key;
+                var itemValue = item.Value;
+
+                // i+1 to adjust to Ones == 1 (eventhough it's at index 0, for useroutput
+                if (scoreboard[itemKey] == null && (dieList.Where(x => x.DiceValue.Equals((i+1))).Count() >= 1))  // && player.Ones() >= 1
+                {
+                    Console.WriteLine((i+1) + ". " + itemKey + itemValue);
+                }
             }
-            return points;
-        }
-
-        public int Twos(bool assign = false)
-        {
-            int points = this.dieList.Where(x => x.DiceValue.Equals(2)).Count();
-
-            if (assign == true)
+            try
+            {   // Assign score based on userInput (Still assign if not in dicelist)
+                int input = Convert.ToInt32(Console.ReadLine());
+                for (int i = 0; i < scoreboard.Count; i++)
+                {
+                    var item = scoreboard.ElementAt(i);
+                    var itemKey = item.Key;
+                    var itemValue = item.Value;
+                    if (input == (i + 1) && (dieList.Where(x => x.DiceValue.Equals((i + 1))).Count() >= 1)) // is input for One and so on
+                    {
+                        scoreboard[itemKey] = dieList.Where(x => x.DiceValue.Equals(i + 1)).Count() * (i + 1);
+                        PlayerTurn = false;
+                       // break;
+                    }
+                }
+            }
+            catch (Exception e)
             {
-                scoreboard["Twos"] = points * 2;
-                PlayerTurn = false;
+                Console.WriteLine(e.Message);
             }
-            return points;
-        }
-
-        public int Threes(bool assign = false)
-        {
-            int points = this.dieList.Where(x => x.DiceValue.Equals(3)).Count();
-            if (assign == true)
-            {
-                scoreboard["Threes"] = points * 3;
-                PlayerTurn = false;
-            }
-            return points;
-        }
-
-        public int Fours(bool assign = false)
-        {
-            int points = this.dieList.Where(x => x.DiceValue.Equals(4)).Count();
-            if (assign == true)
-            {
-                scoreboard["Fours"] = points * 4;
-                PlayerTurn = false;
-            }
-            return points;
-        }
-
-        public int Fives(bool assign = false)
-        {
-            int points = this.dieList.Where(x => x.DiceValue.Equals(5)).Count();
-            if (assign == true)
-            {
-                scoreboard["Fives"] = points * 5;
-                PlayerTurn = false;
-            }
-            return points;
-        }
-
-        public int Sixes(bool assign = false)
-        {
-            int points = this.dieList.Where(x => x.DiceValue.Equals(6)).Count();
-            if (assign == true)
-            {
-                scoreboard["Sixes"] = points * 6;
-                PlayerTurn = false;
-            }
-            return points;
         }
 
         // Calculate occurences of each dice, to calculate scores for lower section.
@@ -195,7 +152,6 @@ namespace YahtzyNEW {
                 }
                 OccurenceOfEachDice[i] = occurence;
             }
-
             // Helper list for troubleshooting
             OccurenceOfEachDice.Select(o => $"{o.Key}: {o.Value}").ToList().ForEach(Console.WriteLine);
         }
@@ -203,14 +159,11 @@ namespace YahtzyNEW {
         // Check if possible or assign depending on bool input
         public int Chance(bool assign = false)
         {
-            int points = this.dieList.Sum(x => x.DiceValue);
-
             if (assign == true)
             {
-                scoreboard["Chance"] = points;
-                PlayerTurn = false;
+                scoreboard["Chance"] = dieList.Sum(x => x.DiceValue);
             }
-            return points;
+            return dieList.Sum(x => x.DiceValue);
         }
 
         // Check if possible or assign depending on bool input
@@ -226,7 +179,6 @@ namespace YahtzyNEW {
                     if (assign == true)
                     {
                         scoreboard["One Pair"] = points;
-                        PlayerTurn = false;
                     }
                 }
             }
@@ -253,7 +205,6 @@ namespace YahtzyNEW {
                 if (assign == true)
                 {
                     scoreboard["Two Pairs"] = points;
-                    PlayerTurn = false;
                 }
             }
             return points;
@@ -272,7 +223,6 @@ namespace YahtzyNEW {
                     if (assign == true)
                     {
                         scoreboard["Three Of A Kind"] = points;
-                        PlayerTurn = false;
                     }
                 }
             }
@@ -292,7 +242,6 @@ namespace YahtzyNEW {
                     if (assign == true)
                     {
                         scoreboard["Four Of A Kind"] = points;
-                        PlayerTurn = false;
                     }
                 }
             }
@@ -312,7 +261,6 @@ namespace YahtzyNEW {
                 if (assign == true)
                 {
                     scoreboard["Small Straight"] = points;
-                    PlayerTurn = false;
                 }
             }
             return points;
@@ -331,7 +279,6 @@ namespace YahtzyNEW {
                 if (assign == true)
                 {
                     scoreboard["Large Straight"] = points;
-                    PlayerTurn = false;
                 }
             }
             return points;
@@ -344,12 +291,11 @@ namespace YahtzyNEW {
             int temppoints = 0;
             bool pair = false;
             bool threeofakind = false;
-
             foreach (var item in OccurenceOfEachDice)
             {
                 if (item.Value == 2)
                 {
-                    temppoints += 2* item.Key;
+                    temppoints += 2 * item.Key;
                     pair = true;
                 }
                 if (item.Value == 3)
@@ -364,7 +310,6 @@ namespace YahtzyNEW {
                 if (assign == true)
                 {
                     scoreboard["Full House"] = points;
-                    PlayerTurn = false;
                 }
             }
             return points;
@@ -382,7 +327,6 @@ namespace YahtzyNEW {
                     if (assign == true)
                     {
                         scoreboard["Yahtzy"] = points;
-                        PlayerTurn = false;
                     }
                 }
             }
@@ -394,16 +338,13 @@ namespace YahtzyNEW {
         {
             if (TotalSum() >= 63)
             {
-                this.scoreboard.Add("Bonus", 50);
+                scoreboard.Add("Bonus", 50);
                 Console.WriteLine("You got a bonus of 50 points, because you got over 63 points in the upper section");
             }
         }
 
         // Check if possible or assign depending on bool input
-        public int? TotalSum()
-        {
-            return scoreboard.Sum(x => x.Value);
-        }
+        public int? TotalSum() => scoreboard.Sum(x => x.Value);
     }
 }
 
