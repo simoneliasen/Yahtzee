@@ -1,39 +1,38 @@
-﻿/*Yahtzy 1.0
- * The following yahtzy game is build upon a modular approach, where the nesting of classes, should/would represent a real-world Yahtzy game, like so:
- * A die is given in the context of five other dice, which is held by a player that has an individual score, which exist in the context of other players
- * This is what makes up a yahtzy game. From this the following classes are created to describe it. 
- * 
- * Classes
- *  - Program: serves as the starting point that initializes the game.
- * 
- *  - Dice: holds the value of a dice, as well as if the dice i 'held' from a previous rounds, additionally this class also controls the bias of the dice,
- *    which can be altered throughout the game.
- *  
- *   - Player: As this is a multilayer game, the player has he's/her's own class, to manage each player, a collection of the players dice,
- *     the amount of rolls pr. round (which can be altered) the name of the player, as well as if it's the players turn, additionally this class also contains
- *     the scoreboard within it as well and methods for calculating if score-assignment is possible, and assigning the score.
- *  
- *   - Game: The game class, can be seen as a view for the player, where commands and input is transformed into the 
- *     logic that exists in the other classes, this class also holds global values and methods, which is static in nature
- *     which is either true no matter what the player inputs, or if the value is not changed by the player throughout the game.
- *   
- * Assumptions: 
- *   - In the application the biased dice is made in one class, with three options of bias, as making an advance function for distribution
- *     in a yahtzy game seemed over the top.
- *  
- *  - The change of rolls method is applied to all players
- *  
- *  - The release method releases all dies
- *  
- *  - The nesting of scoreboard is not chosen as it's complicated??
- *  
+﻿
+/* Yahtzy 1.0
 
- *   Game rules
- *   https://en.wikipedia.org/wiki/Yatzy
- */
+The following yahtzy games design is built upon the real-world application of it.
+A dice is given in the context of five other dice, which is held by a player, which plays with other players. Each individual player has a score, which they keep track of.
+Based on this we can describe the following classes that seeks to mimic and support this.
 
-namespace Yahtzy {
-    internal class Program {
+Classes
+
+- The Program Class: serves as the starting point that initializes the game.
+
+- The Game Class: Can be seen as a view for the player, where generic commands are managed based on the users input, that controls logic in other nested classes.
+
+- The Dice Class: holds the value of a dice, as well as if the dice is 'held' from a previous rounds, additionally this class also controls the bias of the dice, which can be set by the player.
+
+- The BiasedDice Class: This class is inherited from the Dice class and then additionally controls the bias amd the weigth of the bias set by the player.
+
+- The Player class: Contains player information, such as a scoreboard, and the calculations for checking scores are available, and can be assigned.
+
+- The Utility Class: a static class that provides the program with methods for printing output that enhances the user experience of the game.
+
+Assumptions
+-	A user wants to release all his dice
+-	Inheritance biaseddice?
+-   Amount of rolls is applied to all players
+ASsumptions = amount of rolls for both, highest pairs if pairs
+
+Game rules
+https://en.wikipedia.org/wiki/Yatzy
+*/
+
+namespace Yahtzy
+{
+    internal class Program
+    {
         private static void Main(string[] args)
         {
             var yahtzy = new Game();
