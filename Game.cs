@@ -51,13 +51,15 @@ namespace Yahtzy
         // Manages rounds and player turns, as well as resetting for next rounds/turns for each player.
         private void NewRound()
         {
-            foreach (Player player in Players) // A Round
+            // A Round
+            foreach (Player player in Players)
             {
                 UtilityClass.YellowText($"\n{player}'s turn.\n");
                 player.PlayerRolls = AmountOfRolls;
                 player.CheckIfUpperSectionDone();
                 Release(player);
-                while (player.PlayerTurn) // A Turn
+                // A Turn
+                while (player.PlayerTurn)
                 {
                     ReadLine(player);
                 }
@@ -127,10 +129,10 @@ namespace Yahtzy
             {
                 UtilityClass.YellowText(
                     "Type in the dice you want to hold in the format '1,2,3' where 1 marks the most left dice in the list.\n");
-                List<int> holdList = Console.ReadLine().Split(',').Select(int.Parse).ToList();
-                foreach (int holdDice in holdList)
+                List<int> diceToHold = Console.ReadLine().Split(',').Select(int.Parse).ToList();
+                foreach (int dice in diceToHold)
                 {
-                    player.DieList.ElementAt(holdDice - 1).HoldState = true;
+                    player.DiceList.ElementAt(dice - 1).HoldState = true;
                 }
 
                 UtilityClass.GreenText("Sucess!\n");
@@ -144,13 +146,13 @@ namespace Yahtzy
         // Set hold state for all dies to false.
         private static void Release(Player player)
         {
-            foreach (Dice dice in player.DieList)
+            foreach (Dice dice in player.DiceList)
             {
                 dice.HoldState = false;
             }
         }
 
-        // Change bias of input by selecting bias and bias percentage,
+        // Change bias of input by selecting bias and bias percentage.
         private void Bias(Player player)
         {
             UtilityClass.YellowText(
@@ -164,9 +166,9 @@ namespace Yahtzy
                 weight = Convert.ToInt32(Console.ReadLine());
             }
 
-            for (int i = 0; i < player.DieList.Count(); i++)
+            for (int i = 0; i < player.DiceList.Count(); i++)
             {
-                player.DieList[i] = new BiasedDice(bias, weight);
+                player.DiceList[i] = new BiasedDice(bias, weight);
             }
 
             UtilityClass.GreenText("You successfully changed the bias of the dice!\n");
@@ -185,9 +187,9 @@ namespace Yahtzy
         private void Score(Player player)
         {
             Console.WriteLine("---------------------------");
-            foreach (var (key, value) in player.Scoreboard)
+            foreach (var (scorename, score) in player.Scoreboard)
             {
-                Console.WriteLine($"{key}, {value}");
+                Console.WriteLine($"{scorename}: {score}");
             }
 
             Console.WriteLine("---------------------------");
@@ -214,24 +216,26 @@ namespace Yahtzy
         // Check if upper section scores are possible, and assign by userInput.
         private void UpperSectionScores(Player player)
         {
-            for (int i = 0; i < player.Scoreboard.Count; i++) // Check if possible
+            // Check if Assignment of score is possible
+            for (int index = 0; index < player.Scoreboard.Count; index++)
             {
-                var (itemKey, itemValue) = player.Scoreboard.ElementAt(i);
-                if (player.Scoreboard[itemKey] == null && (player.DieList.Any(x => x.DiceValue.Equals(i + 1))))
+                var (scorename, score) = player.Scoreboard.ElementAt(index);
+                if (player.Scoreboard[scorename] == null && (player.DiceList.Any(x => x.DiceValue.Equals(index + 1))))
                 {
-                    UtilityClass.GreenText($"{i + 1}. {itemKey}{itemValue}\n");
+                    UtilityClass.GreenText($"{index + 1}. {scorename}{score}\n");
                 }
             }
 
             try
             {
-                int input = Convert.ToInt32(Console.ReadLine()); // Assign based on input
-                for (int i = 0; i < player.Scoreboard.Count; i++)
+                // Assign score if player input matches assignable score.
+                int playerInput = Convert.ToInt32(Console.ReadLine()); 
+                for (int index = 0; index < player.Scoreboard.Count; index++)
                 {
-                    (string itemKey, int? itemValue) = player.Scoreboard.ElementAt(i);
-                    if (input != (i + 1) || (!player.DieList.Any(x => x.DiceValue.Equals(i + 1)))) continue;
+                    (string scorename, int? score) = player.Scoreboard.ElementAt(index);
+                    if (playerInput != (index + 1) || (!player.DiceList.Any(x => x.DiceValue.Equals(index + 1)))) continue;
                     {
-                        player.Scoreboard[itemKey] = player.DieList.Count(x => x.DiceValue.Equals(i + 1)) * (i + 1);
+                        player.Scoreboard[scorename] = player.DiceList.Count(x => x.DiceValue.Equals(index + 1)) * (index + 1);
                         player.PlayerTurn = false;
                         Console.Clear();
                     }
@@ -243,10 +247,10 @@ namespace Yahtzy
             }
         }
 
-        // Check if scores are possible based on dice rolled, and assign based on user input.
+        // Check if scores are possible in lower section, and assign based on players input.
         private void LowerSectionScores(Player player)
         {
-            // See if score is more than 1 in each score scenario, if it is write to the console. (same for all the if-statement)
+            // See if score is more than 1 in each score scenario, if it is write to the console. 
             if (player.Scoreboard.ContainsKey("One Pair") && player.Scoreboard["One Pair"] == null &&
                 player.OnePair() >= 1)
             {
@@ -359,21 +363,20 @@ namespace Yahtzy
         private void DropScore(Player player)
         {
             UtilityClass.YellowText("What score do you want to drop? \nType the number you want to drop.\n");
-            var droppables = new Dictionary<int, string>();
-            for (int i = player.Scoreboard.Count - 1; i >= 0; i--)
+            var droppableScores = new Dictionary<int, string>();
+            for (int index = player.Scoreboard.Count - 1; index >= 0; index--)
             {
-                KeyValuePair<string, int?> item = player.Scoreboard.ElementAt(i);
-                string scoreName = item.Key;
+                (string scoreName, int? score) = player.Scoreboard.ElementAt(index);
                 if (player.Scoreboard[scoreName] != null) continue;
-                UtilityClass.GreenText($"{i}. {scoreName}\n");
-                droppables.Add(i, scoreName);
+                UtilityClass.GreenText($"{index + 1}. {scoreName}\n");
+                droppableScores.Add(index, scoreName);
             }
 
             try
             {
                 int input = Convert.ToInt32(Console.ReadLine());
-                if (!droppables.ContainsKey(input)) return;
-                string nameOfScore = droppables[input];
+                if (!droppableScores.ContainsKey(input - 1)) return;
+                string nameOfScore = droppableScores[input - 1];
                 player.Scoreboard[nameOfScore] = 0;
                 player.PlayerTurn = false;
             }
@@ -388,7 +391,7 @@ namespace Yahtzy
         private bool GameEnd()
         {
             if (RoundNumber != 15) return false;
-            List<Player> rankedScores = Players.OrderByDescending(player => player.TotalSum()).ToList();
+            var rankedScores = Players.OrderByDescending(player => player.TotalSum()).ToList();
             int ranking = 1;
             foreach (Player player in rankedScores)
             {

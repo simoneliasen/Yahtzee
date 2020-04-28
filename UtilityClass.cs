@@ -4,7 +4,7 @@ namespace Yahtzy
 {
     internal static class UtilityClass
     {
-        // Red text for warnings.
+        // Red text for displaying errors.
         internal static void RedText(string input)
         {
             Console.ForegroundColor = ConsoleColor.Red;

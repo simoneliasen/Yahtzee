@@ -13,9 +13,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\simon\\Desktop\\TheNewestofNew\\YahtzyNEW.csproj",
-      "projectName": "YahtzyNEW",
-      "projectPath": "C:\\Users\\simon\\Desktop\\TheNewestofNew\\YahtzyNEW.csproj",
+      "projectUniqueName": "C:\\Users\\simon\\Desktop\\TheNewestofNew\\Yahtzy.csproj",
+      "projectName": "Yahtzy",
+      "projectPath": "C:\\Users\\simon\\Desktop\\TheNewestofNew\\Yahtzy.csproj",
       "packagesPath": "C:\\Users\\simon\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\simon\\Desktop\\TheNewestofNew\\obj\\",
       "projectStyle": "PackageReference",

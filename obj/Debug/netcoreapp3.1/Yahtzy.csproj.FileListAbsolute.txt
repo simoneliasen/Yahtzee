@@ -1,0 +1,12 @@
+C:\Users\simon\Desktop\TheNewestofNew\bin\Debug\netcoreapp3.1\Yahtzy.exe
+C:\Users\simon\Desktop\TheNewestofNew\bin\Debug\netcoreapp3.1\Yahtzy.deps.json
+C:\Users\simon\Desktop\TheNewestofNew\bin\Debug\netcoreapp3.1\Yahtzy.runtimeconfig.json
+C:\Users\simon\Desktop\TheNewestofNew\bin\Debug\netcoreapp3.1\Yahtzy.runtimeconfig.dev.json
+C:\Users\simon\Desktop\TheNewestofNew\bin\Debug\netcoreapp3.1\Yahtzy.dll
+C:\Users\simon\Desktop\TheNewestofNew\bin\Debug\netcoreapp3.1\Yahtzy.pdb
+C:\Users\simon\Desktop\TheNewestofNew\obj\Debug\netcoreapp3.1\Yahtzy.AssemblyInfoInputs.cache
+C:\Users\simon\Desktop\TheNewestofNew\obj\Debug\netcoreapp3.1\Yahtzy.AssemblyInfo.cs
+C:\Users\simon\Desktop\TheNewestofNew\obj\Debug\netcoreapp3.1\Yahtzy.dll
+C:\Users\simon\Desktop\TheNewestofNew\obj\Debug\netcoreapp3.1\Yahtzy.pdb
+C:\Users\simon\Desktop\TheNewestofNew\obj\Debug\netcoreapp3.1\Yahtzy.genruntimeconfig.cache
+C:\Users\simon\Desktop\TheNewestofNew\obj\Debug\netcoreapp3.1\Yahtzy.csprojAssemblyReference.cache
